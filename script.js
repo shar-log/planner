@@ -182,3 +182,40 @@ function updateCharts() {
 // Init
 // ===================
 renderHabits();
+
+// ----------------------
+// 🔔 Firebase Notifications Setup
+// ----------------------
+// ✅ Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCTArFuPpxo608354Ql9RLOZRB9lGHFndI",
+  authDomain: "habit-tracker-3eb0d.firebaseapp.com",
+  projectId: "habit-tracker-3eb0d",
+  storageBucket: "habit-tracker-3eb0d.firebasestorage.app",
+  messagingSenderId: "724949907964",
+  appId: "1:724949907964:web:f5b76c04de753903d55a79"
+};
+
+// ✅ Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// Ask permission from user
+async function requestPermission() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await messaging.getToken();
+      console.log("✅ FCM Token:", token);
+      alert("Notifications enabled!");
+    } else {
+      alert("❌ Notifications blocked.");
+    }
+  } catch (err) {
+    console.error("Error getting notification permission:", err);
+  }
+}
+
+// Trigger it
+requestPermission();
+

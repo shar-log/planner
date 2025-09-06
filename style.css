@@ -82,3 +82,7 @@ li.done {
   box-shadow: 0 0 8px 2px limegreen;
   color: #000;
 }
+
+.calendar-day.partial {
+  box-shadow: 0 0 6px 1px rgba(144,238,144,0.6);
+}

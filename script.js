@@ -275,7 +275,7 @@ async function enableNotifications() {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const token = await messaging.getToken({
-        vapidKey: "YOUR_PUBLIC_VAPID_KEY_HERE"
+        vapidKey: "BGEbg3peET8fOrLl1k4pjssJjnBfg_gGJzBFzA3ACtLo6fueTuywfm3gm2kB91j0GNBcm4gXlZ3VLcRx1SL8gd0"
       });
       console.log("✅ FCM Token:", token);
       alert("Notifications enabled!");

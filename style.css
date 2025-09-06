@@ -4,6 +4,7 @@ body {
   background: url('background.jpg') center/cover no-repeat fixed;
   color: #fff;
 }
+
 .container {
   background: rgba(0,0,0,0.6);
   max-width: 600px;
@@ -11,12 +12,15 @@ body {
   padding: 2rem;
   border-radius: 10px;
 }
-h1 {
+
+h1, h3 {
   text-align: center;
 }
-form, #history {
+
+form, #history, #month-calendar {
   margin-top: 1rem;
 }
+
 input[type="text"], input[type="date"] {
   width: calc(100% - 100px);
   padding: 0.75rem;
@@ -24,6 +28,7 @@ input[type="text"], input[type="date"] {
   border: none;
   border-radius: 5px;
 }
+
 button {
   padding: 0.75rem 1rem;
   background: #ff9800;
@@ -31,11 +36,13 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
 ul {
   list-style: none;
   padding: 0;
   margin-top: 1rem;
 }
+
 li {
   padding: 0.75rem;
   display: flex;
@@ -44,7 +51,34 @@ li {
   margin-bottom: 0.5rem;
   border-radius: 5px;
 }
+
 li.done {
   text-decoration: line-through;
   opacity: 0.7;
+}
+
+/* Calendar styles */
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 0.5rem;
+}
+
+.calendar-day {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: default;
+  transition: 0.3s;
+}
+
+.calendar-day.done {
+  background: limegreen;
+  box-shadow: 0 0 8px 2px limegreen;
+  color: #000;
 }

@@ -1,107 +1,143 @@
+/* Bubble playful style */
 body {
+  font-family: 'Fredoka One', cursive;
   margin: 0;
-  font-family: 'Comic Sans MS', 'Comic Neue', cursive, sans-serif;
-  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  background: #fff8f0;
   color: #333;
 }
 
-.container {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(255,255,255,0.9);
-  border-radius: 20px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+.app-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 h1 {
-  text-align: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #ff5722;
+  margin-bottom: 10px;
 }
 
-#habit-form {
-  display: flex;
-  margin-top: 1rem;
+.target-days {
+  font-size: 1.2rem;
 }
 
-#habit-input {
-  flex: 1;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 2px solid #ff9800;
-  margin-right: 10px;
+input[type="number"] {
+  width: 70px;
+  padding: 5px;
   font-size: 1rem;
 }
 
-#habit-form button {
-  padding: 0.75rem 1rem;
-  background: #ff9800;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
+.goals-section {
+  margin: 20px 0;
+  background: #fff3e0;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-ul {
+.goals-section h2 {
+  margin-top: 0;
+}
+
+#goalsList {
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
 }
 
-li {
-  padding: 0.75rem;
+#goalsList li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background: #ffe0b2;
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
+  padding: 10px;
   border-radius: 10px;
-  font-weight: bold;
 }
 
-.habit-actions button {
-  background: none;
+#goalsList li .text {
+  flex-grow: 1;
+}
+
+#goalsList li .done {
+  color: green;
+  font-size: 1.4rem;
+  margin-right: 10px;
+}
+
+.goal-input {
+  display: flex;
+  margin-top: 10px;
+}
+
+.goal-input input {
+  flex: 1;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid #ccc;
+}
+
+.goal-input button {
+  background: #ff9800;
   border: none;
-  font-size: 1.3rem;
+  padding: 0 15px;
+  font-size: 1.5rem;
+  border-radius: 0 10px 10px 0;
   cursor: pointer;
-  margin-left: 5px;
 }
 
-#calendar-controls {
+.calendar-section {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.calendar-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
 }
 
-#calendar-grid {
+.calendar-header button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+#calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-top: 1rem;
+  gap: 5px;
 }
 
-.calendar-day {
-  padding: 10px;
-  background: #fff3e0;
+#calendar div {
+  background: #fff;
   border-radius: 8px;
-  text-align: center;
-  font-weight: bold;
+  padding: 10px;
+  cursor: pointer;
 }
 
-.calendar-day.done {
-  background: #4caf50;
-  color: white;
-  box-shadow: 0 0 8px #4caf50;
+#calendar div.done {
+  background: #c8e6c9;
 }
 
-#confetti-canvas {
+.summary-section {
+  margin: 30px 0;
+}
+
+#confettiCanvas {
   position: fixed;
-  bottom:0;
-  left:0;
-  pointer-events:none;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }

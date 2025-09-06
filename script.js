@@ -74,7 +74,7 @@ datePicker.addEventListener('change', () => {
   renderHistory(date);
 });
 
-// Generate month calendar
+// Generate month calendar with partial/full completion
 function generateCalendar(year, month) {
   calendarGrid.innerHTML = '';
   const lastDay = new Date(year, month + 1, 0);
@@ -84,16 +84,26 @@ function generateCalendar(year, month) {
     const div = document.createElement('div');
     div.className = 'calendar-day';
 
-    // Highlight if all habits are done
-    const allDone = data.habits.length > 0 && data.habits.every(h => h.records?.[dateStr]);
-    if (allDone) div.classList.add('done');
+    if (data.habits.length > 0) {
+      const doneCount = data.habits.filter(h => h.records?.[dateStr]).length;
+      const total = data.habits.length;
+
+      if (doneCount === total) {
+        div.classList.add('done'); // fully completed
+      } else if (doneCount > 0) {
+        // partial completion, lighter green shade
+        const intensity = 0.3 + 0.7 * (doneCount / total); // 0.3 to 1
+        div.style.background = `rgba(144,238,144, ${intensity})`;
+        div.classList.add('partial');
+      }
+    }
 
     div.textContent = i;
     calendarGrid.appendChild(div);
   }
 }
 
-// Update calendar after any change
+// Update calendar after changes
 function updateCalendar() {
   const todayDate = new Date();
   generateCalendar(todayDate.getFullYear(), todayDate.getMonth());

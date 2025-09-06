@@ -1,33 +1,24 @@
-const CACHE_NAME = 'habit-tracker-v1';
-const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json',
-  '/confetti.mp3',
-  '/icon192.png',
-  '/icon512.png'
-];
+importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
-  );
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyCTArFuPpxo608354Ql9RLOZRB9lGHFndI",
+  authDomain: "habit-tracker-3eb0d.firebaseapp.com",
+  projectId: "habit-tracker-3eb0d",
+  storageBucket: "habit-tracker-3eb0d.firebasestorage.app",
+  messagingSenderId: "724949907964",
+  appId: "1:724949907964:web:f5b76c04de753903d55a79"
+};
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(key => {
-        if(key !== CACHE_NAME) return caches.delete(key);
-      }))
-    )
-  );
-});
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(resp => resp || fetch(e.request))
-  );
+messaging.onBackgroundMessage(payload => {
+  console.log("📩 Received background:", payload);
+  const notificationTitle = payload.notification?.title || "Habit Tracker";
+  const notificationOptions = {
+    body: payload.notification?.body || "Stay on track with your goals!",
+    icon: "/icon192.png"
+  };
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });

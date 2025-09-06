@@ -1,192 +1,262 @@
-// ===================
-// Local Storage Utils
-// ===================
-function saveData(data) {
-  localStorage.setItem("habits", JSON.stringify(data));
+/* ========================
+   Local Data Management
+======================== */
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+function saveData() {
+  localStorage.setItem("goals", JSON.stringify(goals));
 }
-function loadData() {
-  return JSON.parse(localStorage.getItem("habits")) || { habits: [], history: {} };
-}
 
-// ===================
-// DOM Elements
-// ===================
-const habitForm = document.getElementById("habit-form");
-const habitInput = document.getElementById("habit-input");
-const habitList = document.getElementById("habit-list");
-const todayTitle = document.getElementById("today-title");
-const datePicker = document.getElementById("date-picker");
-const historyList = document.getElementById("history-list");
-const confettiCanvas = document.getElementById("confetti-canvas");
-const confettiSound = document.getElementById("confetti-sound");
+/* ========================
+   DOM Elements
+======================== */
+const goalsList = document.getElementById("goalsList");
+const addGoalBtn = document.getElementById("addGoalBtn");
+const newGoalInput = document.getElementById("newGoal");
+const calendarEl = document.getElementById("calendar");
+const monthYearEl = document.getElementById("monthYear");
+const prevMonthBtn = document.getElementById("prevMonth");
+const nextMonthBtn = document.getElementById("nextMonth");
+const confettiCanvas = document.getElementById("confettiCanvas");
+const confettiCtx = confettiCanvas.getContext("2d");
+const celebrationSound = document.getElementById("celebrationSound");
 
-// ===================
-// State
-// ===================
-let data = loadData();
-let today = new Date().toISOString().split("T")[0];
-
-// ===================
-// Render Functions
-// ===================
-function renderHabits() {
-  todayTitle.textContent = `📅 Habits for ${today}`;
-  habitList.innerHTML = "";
-  data.habits.forEach((habit, index) => {
+/* ========================
+   Goals Rendering
+======================== */
+function renderGoals() {
+  goalsList.innerHTML = "";
+  goals.forEach((goal, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${habit}</span>
-      <div class="habit-actions">
-        <button onclick="toggleHabit(${index})">${isDone(index) ? "✅" : "⬜"}</button>
-        <button onclick="deleteHabit(${index})">🗑️</button>
-      </div>
-    `;
-    habitList.appendChild(li);
+
+    // goal name
+    const span = document.createElement("span");
+    span.className = "text";
+    span.textContent = goal.name;
+
+    // tick
+    const tick = document.createElement("span");
+    tick.className = goal.doneToday ? "done" : "";
+    tick.textContent = goal.doneToday ? "✅" : "";
+
+    // buttons
+    const btns = document.createElement("div");
+
+    const doneBtn = document.createElement("button");
+    doneBtn.textContent = goal.doneToday ? "↩️" : "✔️";
+    doneBtn.onclick = () => toggleGoal(index);
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️";
+    editBtn.onclick = () => editGoal(index);
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "🗑️";
+    delBtn.onclick = () => deleteGoal(index);
+
+    btns.appendChild(doneBtn);
+    btns.appendChild(editBtn);
+    btns.appendChild(delBtn);
+
+    li.appendChild(tick);
+    li.appendChild(span);
+    li.appendChild(btns);
+
+    goalsList.appendChild(li);
   });
-  updateCharts();
 }
 
-function renderHistory(date) {
-  historyList.innerHTML = "";
-  if (data.history[date]) {
-    data.history[date].forEach((done, i) => {
-      const li = document.createElement("li");
-      li.textContent = `${data.habits[i]}: ${done ? "✅" : "❌"}`;
-      historyList.appendChild(li);
+function addGoal() {
+  const name = newGoalInput.value.trim();
+  if (!name) return;
+  goals.push({ name, records: {}, doneToday: false });
+  newGoalInput.value = "";
+  saveData();
+  renderGoals();
+}
+
+function toggleGoal(index) {
+  const today = new Date().toISOString().split("T")[0];
+  const g = goals[index];
+  g.records[today] = !g.records[today];
+  g.doneToday = g.records[today];
+
+  saveData();
+  renderGoals();
+  renderCalendar(currentMonth, currentYear);
+
+  if (g.doneToday) {
+    launchConfetti();
+    celebrationSound.play();
+  }
+}
+
+function editGoal(index) {
+  const newName = prompt("Edit goal:", goals[index].name);
+  if (newName) {
+    goals[index].name = newName;
+    saveData();
+    renderGoals();
+  }
+}
+
+function deleteGoal(index) {
+  if (confirm("Delete this goal?")) {
+    goals.splice(index, 1);
+    saveData();
+    renderGoals();
+  }
+}
+
+/* ========================
+   Calendar Rendering
+======================== */
+function renderCalendar(month, year) {
+  calendarEl.innerHTML = "";
+  const firstDay = new Date(year, month).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  monthYearEl.textContent = new Date(year, month).toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+
+  // Empty cells for starting day
+  for (let i = 0; i < firstDay; i++) {
+    calendarEl.appendChild(document.createElement("div"));
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
+
+    const div = document.createElement("div");
+    div.textContent = day;
+
+    // check if all goals done
+    if (goals.length > 0 && goals.every(g => g.records[dateStr])) {
+      div.classList.add("done");
+    }
+
+    calendarEl.appendChild(div);
+  }
+}
+
+/* ========================
+   Confetti Animation
+======================== */
+function launchConfetti() {
+  const particles = [];
+  for (let i = 0; i < 25; i++) {
+    particles.push({
+      x: confettiCanvas.width / 2,
+      y: confettiCanvas.height,
+      dx: (Math.random() - 0.5) * 6,
+      dy: -Math.random() * 6 - 2,
+      color: `hsl(${Math.random() * 360},100%,50%)`,
+      size: Math.random() * 5 + 2
     });
   }
-}
 
-// ===================
-// Habit Functions
-// ===================
-habitForm.addEventListener("submit", e => {
-  e.preventDefault();
-  const habit = habitInput.value.trim();
-  if (habit) {
-    data.habits.push(habit);
-    data.habits = [...new Set(data.habits)]; // remove duplicates
-    saveData(data);
-    habitInput.value = "";
-    renderHabits();
-  }
-});
-
-function toggleHabit(index) {
-  if (!data.history[today]) data.history[today] = Array(data.habits.length).fill(false);
-  data.history[today][index] = !data.history[today][index];
-  saveData(data);
-  renderHabits();
-
-  if (data.history[today].every(Boolean)) {
-    launchConfetti();
-    confettiSound.play();
-  }
-}
-
-function isDone(index) {
-  return data.history[today] && data.history[today][index];
-}
-
-function deleteHabit(index) {
-  data.habits.splice(index, 1);
-  Object.keys(data.history).forEach(date => {
-    if (data.history[date][index] !== undefined) {
-      data.history[date].splice(index, 1);
+  function animate() {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    particles.forEach(p => {
+      p.x += p.dx;
+      p.y += p.dy;
+      p.dy += 0.2;
+      confettiCtx.fillStyle = p.color;
+      confettiCtx.beginPath();
+      confettiCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      confettiCtx.fill();
+    });
+    if (particles.some(p => p.y < confettiCanvas.height)) {
+      requestAnimationFrame(animate);
     }
-  });
-  saveData(data);
-  renderHabits();
+  }
+  animate();
 }
 
-// ===================
-// History
-// ===================
-datePicker.addEventListener("change", e => renderHistory(e.target.value));
-
-// ===================
-// Confetti Popper Effect
-// ===================
-function launchConfetti() {
-  const ctx = confettiCanvas.getContext("2d");
+function resizeCanvas() {
   confettiCanvas.width = window.innerWidth;
   confettiCanvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-  let confetti = [];
-  const colors = ["#ff5252", "#ff9800", "#4caf50", "#2196f3", "#9c27b0"];
+/* ========================
+   Summary Chart
+======================== */
+function renderSummary() {
+  const ctx = document.getElementById("summaryChart").getContext("2d");
 
-  for (let i = 0; i < 40; i++) {
-    confetti.push({
-      x: window.innerWidth / 2,
-      y: window.innerHeight,
-      r: Math.random() * 6 + 4,
-      d: Math.random() * 40 + 10,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      tilt: Math.random() * 10 - 10,
-      tiltAngleIncrement: Math.random() * 0.07 + 0.05,
-      tiltAngle: 0
+  const labels = [];
+  const data = [];
+  const today = new Date();
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split("T")[0];
+    labels.push(d.toLocaleDateString());
+
+    let count = 0;
+    goals.forEach(g => {
+      if (g.records[dateStr]) count++;
     });
+    data.push(count);
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    confetti.forEach(c => {
-      ctx.beginPath();
-      ctx.fillStyle = c.color;
-      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2, true);
-      ctx.fill();
-    });
-    update();
-  }
-
-  function update() {
-    confetti.forEach(c => {
-      c.y -= (Math.cos(c.d) + 2 + c.r / 2) / 2;
-      c.x += Math.sin(c.d);
-      c.tiltAngle += c.tiltAngleIncrement;
-      c.tilt = Math.sin(c.tiltAngle) * 15;
-    });
-  }
-
-  let interval = setInterval(draw, 20);
-  setTimeout(() => clearInterval(interval), 2500);
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Goals Completed",
+          data,
+          backgroundColor: "#4caf50"
+        }
+      ]
+    }
+  });
 }
 
-// ===================
-// Charts
-// ===================
-const weeklyChart = new Chart(document.getElementById("weeklyChart"), {
-  type: "bar",
-  data: { labels: [], datasets: [{ label: "Weekly Progress", data: [] }] }
-});
-const monthlyChart = new Chart(document.getElementById("monthlyChart"), {
-  type: "line",
-  data: { labels: [], datasets: [{ label: "Monthly Progress", data: [] }] }
-});
-
-function updateCharts() {
-  let last7 = Object.keys(data.history).slice(-7);
-  let weekly = last7.map(d => data.history[d].filter(Boolean).length);
-  weeklyChart.data.labels = last7;
-  weeklyChart.data.datasets[0].data = weekly;
-  weeklyChart.update();
-
-  let last30 = Object.keys(data.history).slice(-30);
-  let monthly = last30.map(d => data.history[d].filter(Boolean).length);
-  monthlyChart.data.labels = last30;
-  monthlyChart.data.datasets[0].data = monthly;
-  monthlyChart.update();
+/* ========================
+   Export / Import Backup
+======================== */
+function exportData() {
+  const blob = new Blob([JSON.stringify(goals)], {
+    type: "application/json"
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "habit_backup.json";
+  a.click();
 }
 
-// ===================
-// Init
-// ===================
-renderHabits();
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      goals = JSON.parse(e.target.result);
+      saveData();
+      renderGoals();
+      renderCalendar(currentMonth, currentYear);
+      alert("Import successful!");
+    } catch (err) {
+      alert("Invalid file!");
+    }
+  };
+  reader.readAsText(file);
+}
 
-// ----------------------
-// 🔔 Firebase Notifications Setup
-// ----------------------
-// ✅ Firebase Config
+/* ========================
+   Firebase Cloud Messaging
+======================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCTArFuPpxo608354Ql9RLOZRB9lGHFndI",
   authDomain: "habit-tracker-3eb0d.firebaseapp.com",
@@ -196,27 +266,53 @@ const firebaseConfig = {
   appId: "1:724949907964:web:f5b76c04de753903d55a79"
 };
 
-// ✅ Initialize Firebase
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// Ask permission from user
-async function requestPermission() {
+async function enableNotifications() {
   try {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      const token = await messaging.getToken();
+      const token = await messaging.getToken({
+        vapidKey: "YOUR_PUBLIC_VAPID_KEY_HERE"
+      });
       console.log("✅ FCM Token:", token);
       alert("Notifications enabled!");
     } else {
       alert("❌ Notifications blocked.");
     }
   } catch (err) {
-    console.error("Error getting notification permission:", err);
+    console.error("Error getting permission:", err);
   }
 }
 
-// Attach to button
-document.getElementById("notify-btn").addEventListener("click", requestPermission);
+document.getElementById("notifyBtn")?.addEventListener("click", enableNotifications);
 
+/* ========================
+   Event Listeners
+======================== */
+addGoalBtn.addEventListener("click", addGoal);
+prevMonthBtn.addEventListener("click", () => {
+  currentMonth--;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+  renderCalendar(currentMonth, currentYear);
+});
+nextMonthBtn.addEventListener("click", () => {
+  currentMonth++;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+  renderCalendar(currentMonth, currentYear);
+});
 
+/* ========================
+   Initial Render
+======================== */
+renderGoals();
+renderCalendar(currentMonth, currentYear);
+renderSummary();

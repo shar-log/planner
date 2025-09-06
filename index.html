@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF‑8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Planner Tracker</title>
+  <title>Habit Tracker</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#317EFB"/>
 </head>
 <body>
   <div class="container">
-    <h1>📅 Planner & Tracker</h1>
-    <form id="task-form">
-      <input type="text" id="task-input" placeholder="Enter a new task..." required />
-      <button type="submit">Add</button>
+    <h1>Daily Habit Tracker</h1>
+    <div id="today-title"></div>
+    <form id="habit-form">
+      <input type="text" id="habit-input" placeholder="Add a new habit..." required />
+      <button>Add</button>
     </form>
-
-    <div class="tracker">
-      <span>Total: <span id="total-count">0</span></span>
-      <span>✔️ Completed: <span id="completed-count">0</span></span>
-      <span>⏳ Remaining: <span id="remaining-count">0</span></span>
+    <ul id="habit-list"></ul>
+    <div id="history">
+      <label for="date-picker">View Date:</label>
+      <input type="date" id="date-picker" />
+      <ul id="history-list"></ul>
     </div>
-
-    <ul id="task-list"></ul>
   </div>
-
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker Registered'));
+      navigator.serviceWorker.register('service-worker.js');
     }
   </script>
 </body>

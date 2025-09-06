@@ -216,6 +216,7 @@ async function requestPermission() {
   }
 }
 
-// Trigger it
-requestPermission();
+// Attach to button
+document.getElementById("notify-btn").addEventListener("click", requestPermission);
+
 

@@ -13,9 +13,9 @@
     <h1>Ultimate Habit Tracker</h1>
     <div id="today-title"></div>
 
-    <form id="habit-form">
+    <form id="habit-form" class="row">
       <input type="text" id="habit-input" placeholder="Add a new habit..." required />
-      <button>Add</button>
+      <button type="submit" id="add-btn">Add</button>
     </form>
 
     <ul id="habit-list"></ul>
@@ -31,26 +31,59 @@
     <!-- Calendar Section -->
     <div id="month-calendar">
       <h3>Monthly Progress</h3>
-      <button id="prev-month">&#8592; Previous</button>
-      <button id="next-month">Next &#8594;</button>
+      <div class="month-controls">
+        <button id="prev-month" class="small">◀</button>
+        <div id="month-label"></div>
+        <button id="next-month" class="small">▶</button>
+      </div>
       <div id="calendar-grid"></div>
     </div>
 
-    <!-- Export/Import Section -->
-    <div id="backup">
-      <button id="export-btn">Export Data</button>
-      <input type="file" id="import-input" style="display:none"/>
-      <button id="import-btn">Import Data</button>
+    <!-- Charts: weekly & monthly -->
+    <div id="charts" class="charts">
+      <h3>Summaries</h3>
+      <div class="chart-row">
+        <div class="chart-card">
+          <h4>Last 4 Weeks (completed %)</h4>
+          <canvas id="weeklyChart" width="400" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <h4>Current Month (daily %)</h4>
+          <canvas id="monthlyChart" width="400" height="180"></canvas>
+        </div>
+      </div>
     </div>
 
+    <!-- Reminder -->
+    <div id="reminder" class="backup-row">
+      <label for="reminder-time">Daily reminder (local):</label>
+      <input type="time" id="reminder-time"/>
+      <button id="set-reminder">Set</button>
+      <button id="clear-reminder">Clear</button>
+      <small id="reminder-note"></small>
+    </div>
+
+    <!-- Export/Import Section -->
+    <div id="backup" class="backup-row">
+      <button id="export-btn">Export Data</button>
+      <input type="file" id="import-input" accept="application/json" style="display:none"/>
+      <button id="import-btn">Import Data</button>
+      <button id="clear-btn" title="Clear all data (irreversible)">Clear All</button>
+    </div>
+
+    <div id="notes">
+      <small>Data is stored locally. Use Export to backup and Import to restore. Notifications work while this page is open (see README for persistent options).</small>
+    </div>
   </div>
 
   <canvas id="confetti-canvas"></canvas>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
+      navigator.serviceWorker.register('service-worker.js').catch(e=>console.log('SW reg failed',e));
     }
   </script>
 </body>

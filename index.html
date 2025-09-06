@@ -3,61 +3,63 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Habit Tracker 🎯</title>
+  <title>🎯 My Goals Tracker</title>
   <link rel="stylesheet" href="style.css"/>
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#ff9800"/>
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Firebase -->
+
+  <!-- Firebase (must be before script.js) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js"></script>
+
+  <!-- Google Bubble-like playful font -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1>🌟 My Fun Habit Tracker 🌟</h1>
-    <div id="today-title"></div>
-
-    <form id="habit-form">
-      <input type="text" id="habit-input" placeholder="✨ Add a new habit..." required />
-      <button>Add</button>
-    </form>
-
-    <ul id="habit-list"></ul>
-
-    <div id="history">
-      <label for="date-picker">📅 View Date:</label>
-      <input type="date" id="date-picker"/>
-      <ul id="history-list"></ul>
-    </div>
-
-    <!-- Calendar -->
-    <div id="calendar-section">
-      <div id="calendar-controls">
-        <button id="prev-month">⬅️</button>
-        <span id="month-name"></span>
-        <button id="next-month">➡️</button>
+  <div class="app-container">
+    <header>
+      <h1>🎯 My Goals Tracker</h1>
+      <div class="target-days">
+        Target Days: <input type="number" id="targetDays" min="1" value="20"/>
       </div>
-      <div id="calendar-grid"></div>
-    </div>
+    </header>
 
-    <!-- Charts -->
-    <h2>📊 Progress Summary</h2>
-    <canvas id="weeklyChart"></canvas>
-    <canvas id="monthlyChart"></canvas>
+    <main>
+      <section class="goals-section">
+        <h2>📌 My Goals</h2>
+        <ul id="goalsList"></ul>
+        <div class="goal-input">
+          <input type="text" id="newGoal" placeholder="Add a new goal..."/>
+          <button id="addGoalBtn">➕</button>
+        </div>
+      </section>
 
-    <!-- Export / Import -->
-    <div class="backup-controls">
-      <button id="export-btn">⬇️ Export</button>
-      <button id="import-btn">⬆️ Import</button>
-      <input type="file" id="import-input" hidden/>
-    </div>
+      <section class="calendar-section">
+        <div class="calendar-header">
+          <button id="prevMonth">⬅️</button>
+          <span id="monthYear"></span>
+          <button id="nextMonth">➡️</button>
+        </div>
+        <div id="calendar"></div>
+      </section>
+
+      <section class="summary-section">
+        <h2>📊 Progress Summary</h2>
+        <canvas id="summaryChart"></canvas>
+      </section>
+    </main>
+
+    <!-- Confetti canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Sound for celebration -->
+    <audio id="celebrationSound" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
   </div>
 
-  <!-- Confetti -->
-  <canvas id="confetti-canvas"></canvas>
-  <audio id="confetti-sound" src="celebration.mp3"></audio>
-
+  <!-- App logic -->
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

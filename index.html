@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF‑8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Habit Tracker</title>
   <link rel="stylesheet" href="style.css" />
@@ -12,17 +12,28 @@
   <div class="container">
     <h1>Daily Habit Tracker</h1>
     <div id="today-title"></div>
+
     <form id="habit-form">
       <input type="text" id="habit-input" placeholder="Add a new habit..." required />
       <button>Add</button>
     </form>
+
     <ul id="habit-list"></ul>
+
     <div id="history">
       <label for="date-picker">View Date:</label>
       <input type="date" id="date-picker" />
       <ul id="history-list"></ul>
     </div>
+
+    <!-- Monthly calendar section -->
+    <div id="month-calendar">
+      <h3>Monthly Progress</h3>
+      <div id="calendar-grid"></div>
+    </div>
+
   </div>
+
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

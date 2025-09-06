@@ -1,5 +1,12 @@
-const CACHE = 'habit-tracker-v1';
-const FILES = ['/', '/index.html', '/style.css', '/script.js', '/background.jpg', '/manifest.json'];
+const CACHE = 'habit-tracker-v2';
+const FILES = [
+  '/',
+  '/index.html',
+  '/style.css',
+  '/script.js',
+  '/manifest.json',
+  '/celebration.mp3'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));

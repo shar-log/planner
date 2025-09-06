@@ -1,24 +1,10 @@
-const CACHE_NAME = 'planner-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json'
-];
+const CACHE = 'habit-tracker-v1';
+const FILES = ['/', '/index.html', '/style.css', '/script.js', '/background.jpg', '/manifest.json'];
 
-self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
 });
 
-self.addEventListener('fetch', function(e) {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
-  );
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
 });

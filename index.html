@@ -60,12 +60,22 @@
   </div>
 
   <!-- App logic -->
-  <script src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-      navigator.serviceWorker.register('firebase-messaging-sw.js');
-    }
-  </script>
+<script src="script.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    // Register app service worker (caching/offline)
+    navigator.serviceWorker
+      .register("service-worker.js")
+      .then((reg) => console.log("✅ App SW registered:", reg.scope))
+      .catch((err) => console.error("❌ App SW failed:", err));
+
+    // Register Firebase messaging service worker
+    navigator.serviceWorker
+      .register("firebase-messaging-sw.js")
+      .then((reg) => console.log("✅ Firebase SW registered:", reg.scope))
+      .catch((err) => console.error("❌ Firebase SW failed:", err));
+  }
+</script>
+
 </body>
 </html>

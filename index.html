@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Habit Tracker</title>
+  <title>Ultimate Habit Tracker</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#317EFB"/>
 </head>
 <body>
   <div class="container">
-    <h1>Daily Habit Tracker</h1>
+    <h1>Ultimate Habit Tracker</h1>
     <div id="today-title"></div>
 
     <form id="habit-form">
@@ -20,19 +20,32 @@
 
     <ul id="habit-list"></ul>
 
+    <div id="points-display"></div>
+
     <div id="history">
       <label for="date-picker">View Date:</label>
       <input type="date" id="date-picker" />
       <ul id="history-list"></ul>
     </div>
 
-    <!-- Monthly calendar section -->
+    <!-- Calendar Section -->
     <div id="month-calendar">
       <h3>Monthly Progress</h3>
+      <button id="prev-month">&#8592; Previous</button>
+      <button id="next-month">Next &#8594;</button>
       <div id="calendar-grid"></div>
     </div>
 
+    <!-- Export/Import Section -->
+    <div id="backup">
+      <button id="export-btn">Export Data</button>
+      <input type="file" id="import-input" style="display:none"/>
+      <button id="import-btn">Import Data</button>
+    </div>
+
   </div>
+
+  <canvas id="confetti-canvas"></canvas>
 
   <script src="script.js"></script>
   <script>

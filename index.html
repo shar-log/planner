@@ -1,89 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ultimate Habit Tracker</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#317EFB"/>
+  <title>Habit Tracker 🎯</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#ff9800"/>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Ultimate Habit Tracker</h1>
+    <h1>🌟 My Fun Habit Tracker 🌟</h1>
     <div id="today-title"></div>
 
-    <form id="habit-form" class="row">
-      <input type="text" id="habit-input" placeholder="Add a new habit..." required />
-      <button type="submit" id="add-btn">Add</button>
+    <form id="habit-form">
+      <input type="text" id="habit-input" placeholder="✨ Add a new habit..." required />
+      <button>Add</button>
     </form>
 
     <ul id="habit-list"></ul>
 
-    <div id="points-display"></div>
-
     <div id="history">
-      <label for="date-picker">View Date:</label>
-      <input type="date" id="date-picker" />
+      <label for="date-picker">📅 View Date:</label>
+      <input type="date" id="date-picker"/>
       <ul id="history-list"></ul>
     </div>
 
-    <!-- Calendar Section -->
-    <div id="month-calendar">
-      <h3>Monthly Progress</h3>
-      <div class="month-controls">
-        <button id="prev-month" class="small">◀</button>
-        <div id="month-label"></div>
-        <button id="next-month" class="small">▶</button>
+    <!-- Calendar -->
+    <div id="calendar-section">
+      <div id="calendar-controls">
+        <button id="prev-month">⬅️</button>
+        <span id="month-name"></span>
+        <button id="next-month">➡️</button>
       </div>
       <div id="calendar-grid"></div>
     </div>
 
-    <!-- Charts: weekly & monthly -->
-    <div id="charts" class="charts">
-      <h3>Summaries</h3>
-      <div class="chart-row">
-        <div class="chart-card">
-          <h4>Last 4 Weeks (completed %)</h4>
-          <canvas id="weeklyChart" width="400" height="180"></canvas>
-        </div>
-        <div class="chart-card">
-          <h4>Current Month (daily %)</h4>
-          <canvas id="monthlyChart" width="400" height="180"></canvas>
-        </div>
-      </div>
-    </div>
+    <!-- Charts -->
+    <h2>📊 Progress Summary</h2>
+    <canvas id="weeklyChart"></canvas>
+    <canvas id="monthlyChart"></canvas>
 
-    <!-- Reminder -->
-    <div id="reminder" class="backup-row">
-      <label for="reminder-time">Daily reminder (local):</label>
-      <input type="time" id="reminder-time"/>
-      <button id="set-reminder">Set</button>
-      <button id="clear-reminder">Clear</button>
-      <small id="reminder-note"></small>
-    </div>
-
-    <!-- Export/Import Section -->
-    <div id="backup" class="backup-row">
-      <button id="export-btn">Export Data</button>
-      <input type="file" id="import-input" accept="application/json" style="display:none"/>
-      <button id="import-btn">Import Data</button>
-      <button id="clear-btn" title="Clear all data (irreversible)">Clear All</button>
-    </div>
-
-    <div id="notes">
-      <small>Data is stored locally. Use Export to backup and Import to restore. Notifications work while this page is open (see README for persistent options).</small>
+    <!-- Export / Import -->
+    <div class="backup-controls">
+      <button id="export-btn">⬇️ Export</button>
+      <button id="import-btn">⬆️ Import</button>
+      <input type="file" id="import-input" hidden/>
     </div>
   </div>
 
+  <!-- Confetti -->
   <canvas id="confetti-canvas"></canvas>
+  <audio id="confetti-sound" src="celebration.mp3"></audio>
 
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').catch(e=>console.log('SW reg failed',e));
+      navigator.serviceWorker.register('service-worker.js');
+      navigator.serviceWorker.register('firebase-messaging-sw.js');
     }
   </script>
 </body>
